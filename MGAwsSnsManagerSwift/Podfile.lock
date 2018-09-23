@@ -1,0 +1,54 @@
+PODS:
+  - AWSCognito (2.6.30):
+    - AWSCore (= 2.6.30)
+  - AWSCore (2.6.30)
+  - AWSSNS (2.6.30):
+    - AWSCore (= 2.6.30)
+  - CLImagePickerTool (2.3.1)
+  - Ipify (1.1.0)
+  - Kingfisher (4.9.0)
+  - MGUtilsSwift (0.2.0):
+    - CLImagePickerTool (~> 2.3.1)
+    - Ipify
+    - Kingfisher (~> 4.9.0)
+    - ReachabilitySwift
+    - SwiftyJSON
+    - Toast-Swift (~> 3.0.1)
+  - ReachabilitySwift (4.2.1)
+  - SwiftyJSON (4.1.0)
+  - Toast-Swift (3.0.1)
+
+DEPENDENCIES:
+  - AWSCognito (~> 2.6.29)
+  - AWSCore (~> 2.6.29)
+  - AWSSNS (~> 2.6.29)
+  - MGUtilsSwift
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AWSCognito
+    - AWSCore
+    - AWSSNS
+    - CLImagePickerTool
+    - Ipify
+    - Kingfisher
+    - MGUtilsSwift
+    - ReachabilitySwift
+    - SwiftyJSON
+    - Toast-Swift
+
+SPEC CHECKSUMS:
+  AWSCognito: 1f42162d003180ef67f13752f270d09e7ea57c91
+  AWSCore: 11e8bb89d8d2e3bb6e31caa8b944ca7dae4c87cd
+  AWSSNS: 8aa1a5e58996f7dd01694186b821e98f2748fd52
+  CLImagePickerTool: cb3bda742d5125943190523edeb3d4751e84cde3
+  Ipify: 1d96ce2b7ee8fd8ee41568c3fc39a45dac15d7ca
+  Kingfisher: 64539b51826b778206daa6ed815d12653caa69dd
+  MGUtilsSwift: 87564c27a193cb05091ceb406e5e0282a3571f87
+  ReachabilitySwift: 35720ffea59c1c76d15f885be77fd33e33985427
+  SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
+  Toast-Swift: ba0b01b095aada709d915f9beb1d38184a2721c3
+
+PODFILE CHECKSUM: c1df08caeffdf42c4f3fb52d74e29156c058daff
+
+COCOAPODS: 1.5.3

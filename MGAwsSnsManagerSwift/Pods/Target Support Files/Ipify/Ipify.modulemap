@@ -1,0 +1,6 @@
+framework module Ipify {
+  umbrella header "Ipify-umbrella.h"
+
+  export *
+  module * { export * }
+}

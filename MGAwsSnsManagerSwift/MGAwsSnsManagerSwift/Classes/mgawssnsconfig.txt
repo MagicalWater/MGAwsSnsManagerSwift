@@ -1,0 +1,26 @@
+//此份是demo文件, 具體配置如下, 將配置好的 mgawssnsconfig.txt 放在專案根目錄, 並且加入target即可使用
+//debug/release - 根據 app 是開發(debug)版本 或者 生產(production)版本定義
+//applicationArn - sns app arn
+//topicsArn - 需要訂閱的主題arn
+//region - 區域代碼, 依照建立的 sns app 區域 和 身份池 變動
+//identityPoolId - 身份池id
+
+//請複製此檔案並只保留下面這段, 替換掉 1. applicationArn, 2. topicsArn, 3. region, 4. identityPoolId 的值, 將之匯入專案並加入target
+{
+    "debug": {
+        "applicationArn": "arn:aws:sns:ap-southeast-1:748166261271:app/APNS_SANDBOX/XinjiangFutures-Dev-IOS",
+        "topicsArn": [
+            "arn:aws:sns:ap-southeast-1:748166261271:XinjiangFuturesDev"
+        ],
+        "region": "ap-southeast-1",
+        "identityPoolId": "ap-southeast-1:55030e36-e663-494b-8c0c-3e5d67c0b804"
+    },
+    "release": {
+        "applicationArn": "arn:aws:sns:ap-southeast-1:748166261271:app/APNS_SANDBOX/XinjiangFutures-Dev-IOS",
+        "topicsArn": [
+            "arn:aws:sns:ap-southeast-1:748166261271:XinjiangFuturesDev"
+        ],
+        "region": "ap-southeast-1",
+        "identityPoolId": "ap-southeast-1:55030e36-e663-494b-8c0c-3e5d67c0b804"
+    }
+}
