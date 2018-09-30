@@ -6,9 +6,8 @@ target 'MGAwsSnsManagerSwift' do
   use_frameworks!
 
   # Pods for MGAwsSnsManagerSwift
-  pod 'AWSCore', '~> 2.6.29'
-  pod 'AWSSNS', '~> 2.6.29'
-  pod 'AWSCognito', '~> 2.6.29'
-  pod 'MGUtilsSwift'
+  pod 'AWSCore', '~> 2.6.31'
+  pod 'AWSSNS', '~> 2.6.31'
+  pod 'AWSCognito', '~> 2.6.31'
 
 end

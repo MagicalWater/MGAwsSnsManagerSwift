@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A26033AC1AD4A126352AEF2E17C208E9"
+               BlueprintIdentifier = "A425E91EE465272185D79B69AD8985B4"
                BuildableName = "Pods_MGAwsSnsManagerSwift.framework"
                BlueprintName = "Pods-MGAwsSnsManagerSwift"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A26033AC1AD4A126352AEF2E17C208E9"
+            BlueprintIdentifier = "A425E91EE465272185D79B69AD8985B4"
             BuildableName = "Pods_MGAwsSnsManagerSwift.framework"
             BlueprintName = "Pods-MGAwsSnsManagerSwift"
             ReferencedContainer = "container:Pods.xcodeproj">

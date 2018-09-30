@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.name         = "MGAWSSNSManagerSwift"
-  s.version      = "0.0.2"
+  s.version      = "1.0.0"
   s.summary      = "封裝使用 aws 的 simple notification service."
 
   s.description  = <<-DESC
@@ -33,10 +33,8 @@ Pod::Spec.new do |s|
   s.frameworks  = "Foundation", "UserNotifications"
 
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  # s.dependency "JSONKit", "~> 1.4"
-  s.dependency 'AWSCore', '~> 2.6.29'
-  s.dependency 'AWSSNS', '~> 2.6.29'
-  s.dependency 'AWSCognito', '~> 2.6.29'
-  s.dependency 'MGUtilsSwift'
+  s.dependency 'AWSCore', '~> 2.6.31'
+  s.dependency 'AWSSNS', '~> 2.6.31'
+  s.dependency 'AWSCognito', '~> 2.6.31'
 
 end

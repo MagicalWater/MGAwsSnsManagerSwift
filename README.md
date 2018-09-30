@@ -11,6 +11,7 @@
 [iOS Push with Amazon's AWS Simple Notifications Service (SNS)](https://medium.com/@thabodavidnyakalloklass/ios-push-with-amazons-aws-simple-notifications-service-sns-and-swift-made-easy-51d6c79bc206)  
 
 ## 版本
+1.0.0 - 更新 swift version 至 4.2, 將註冊主題的部分拉出, 可由外部呼叫是否註冊主題     
 0.0.2 - 修改顯示名稱    
 0.0.1 - 初始專案提交  
 
@@ -25,9 +26,9 @@ pod 'MGAwsSnsManagerSwift', '~> {version}'
 2. 專案配置遠程推播相關設定, 開啟 background mode, 以及 push notification
 3. 專案引入 aws sdk, 可使用 cocoapods 直接引入, 當前文件使用的 sdk 版本皆為 2.6.29
 
-        pod 'AWSCore', '~> 2.6.29'
-        pod 'AWSSNS', '~> 2.6.29'
-        pod 'AWSCognito', '~> 2.6.29'
+        pod 'AWSCore', '~> 2.6.31'
+        pod 'AWSSNS', '~> 2.6.31'
+        pod 'AWSCognito', '~> 2.6.31'
 
 ## 初次接入 AWS Simple Notification Service
 ### 接入 aws sns 需要下列資料
@@ -65,26 +66,27 @@ pod 'MGAwsSnsManagerSwift', '~> {version}'
         class AppDelegate: UIResponder, UIApplicationDelegate {
 
             //aws sns推播服務封裝類別
-            private var mAwsManager: MGAwsSnsManager! 
+            private var mAwsManager: MGAwsSnsManager 
 
-            func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+            func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
                 
-                //推播初始化類別, 並初始化配置
+                //推播類初始化配置
+                
                 do {
-                    //有兩種初始化選擇, 選擇一個進行初始化
+                    //有兩種初始化設置的方式, 選擇一個進行初始化
                     //a. 無參數 - 須先在專案目錄下創建並加入名為 mgawssnsconfig.txt 的文件, 內容可參考最下方說明, 沒有或者內容不對則拋出錯誤
-                    mAwsManager = try MGAwsSnsManager.init()
+                    MGAwsSnsManager.shared.loadConfig()
                     
                     //b. 有參數 - 帶入需要的資料
-                    mAwsManager = MGAwsSnsManager.init(
-                                        applicationArn: "",
-                                        topicsArn: [],
-                                        region: "",
-                                        identityPoolId: ""
-                                  )
+                    MGAwsSnsManager.shared.loadConfig(
+                            applicationArn: "",
+                            topicsArn: [],
+                            region: "",
+                            identityPoolId: ""
+                    )
                                   
-                    //最後初始化相關配置, 此步驟會依據初始化時代入的資料設定 aws 身份憑證, 並且向系統註冊遠程推播
-                    try mAwsManager.configurationInit()
+                    //最後開始依照配置檔進行向aws註冊app推播, 此步驟會設定 aws 身份憑證, 並且向系統註冊遠程推播
+                    try MGAwsSnsManager.shared.settingStart()
                 } catch {
                     print("初始化 awsManager 設置出現錯誤 \(error)")
                 }
@@ -96,11 +98,23 @@ pod 'MGAwsSnsManagerSwift', '~> {version}'
         //當向系統註冊遠程推播成功後調用
         func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
             //註冊 app token 到 aws app arn 下, 同時註冊 topic
-            mAwsManager.registerToApplication(deviceToken: deviceToken)
+            //@param autoRegisterTopic - 是否在app註冊成功後自動註冊主題 
+            mAwsManager.registerToApplication(deviceToken: deviceToken, autoRegisterTopic: false)
         }
         
 mgawssnsconfig.txt 的內容格式: [Config配置](https://github.com/MagicalWater/MGAwsSnsManagerSwift/blob/master/MGAwsSnsManagerSwift/MGAwsSnsManagerSwift/Classes/mgawssnsconfig.txt)
+
+ 3. 訂閱/取消訂閱/檢查訂閱 主題 
+ 
+        //訂閱主題
+        MGAwsSnsManager.shared.registerToTopic()
         
- 3. 至此 aws 配置完成, 可以執行app看看了(當然不能是模擬器, 要實機)  
+        //取消訂閱主題
+        MGAwsSnsManager.shared.unregisterTopic()
+        
+        //檢查主題是否已訂閱
+        MGAwsSnsManager.shared.isTopicRegistered
+        
+ 4. 至此 aws 配置完成, 可以執行app看看了(當然不能是模擬器, 要實機)  
  若一切無誤的話, 可以在 sns app arn 點進去之後可以看到註冊的裝置, topic 同理
         

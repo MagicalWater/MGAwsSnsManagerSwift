@@ -7,32 +7,19 @@
 //
 
 import Foundation
-import SwiftyJSON
-import MGUtilsSwift
 
 //反序列化 mgawssnsconfig.txt
-class RawAwsSnsConfig: MGJsonDeserializeDelegate {
+class RawAwsSnsConfig: Codable {
     
-    var configMap: [String:AWSSNSTarget]!
-    
-    required init(_ json: JSON) {
-        configMap = json.dictionaryValue.mapValues { AWSSNSTarget.init($0) }
-    }
+    var configMap: [String:AWSSNSTarget]
     
 }
 
-class AWSSNSTarget {
+class AWSSNSTarget: Codable {
     
-    var applicationArn: String!
-    var topicsArn: [String]!
-    var region: String!
-    var identityPoolId: String!
-    
-    init(_ json: JSON) {
-        applicationArn = json["applicationArn"].stringValue
-        topicsArn = json["topicsArn"].arrayValue.map { $0.stringValue }
-        region = json["region"].stringValue
-        identityPoolId = json["identityPoolId"].stringValue
-    }
+    var applicationArn: String
+    var topicsArn: [String]
+    var region: String
+    var identityPoolId: String
     
 }

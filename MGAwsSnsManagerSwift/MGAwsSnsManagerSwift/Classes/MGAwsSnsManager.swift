@@ -11,7 +11,6 @@ import AWSCore
 import AWSCognito
 import AWSSNS
 import UserNotifications
-import MGUtilsSwift
 
 //aws的simple notification service封裝使用
 //在此頁面會順便註冊遠程推播, 因此不須在AppDelegate再註冊一次
@@ -55,23 +54,43 @@ public class MGAwsSnsManager: NSObject {
         case noFoundConfigText  //沒有找到初始化配置文件
     }
     
-    private(set) var mApplicationArn: String
-    private(set) var mTopicsArn: [String]
-    private(set) var mRegion: String
-    private(set) var mIdentityPoolId: String
+    private(set) var mApplicationArn: String = ""
+    private(set) var mTopicsArn: [String] = []
+    private(set) var mRegion: String = ""
+    private(set) var mIdentityPoolId: String = ""
     
     private var mSubScriptProtocol: String = "application"
     
     private(set) var mEndPoint: String = ""
     
+    //app是否已經註冊了
+    private var mIsAppArnRegistered: Bool = false
+    
+    //主題是否已經註冊了
+    public private(set) var isTopicRegistered: Bool = false
+    
+    //依照此key在userdefault讀取是否有開啟主題推播
+    private let keyForTopicRegistered = "keyForTopicRegistered"
+    
+    public static let shared: MGAwsSnsManager = MGAwsSnsManager.init()
+    
+    private override init() {
+        super.init()
+        self.loadSetting()
+    }
+    
     /*
      直接設定 awsconfig.txt, 內容需求見demo, awsconfig.txt位置在主包bundle裏
      */
-    public init(_ customConfigFileName: String? = nil) throws {
+    public func loadConfig(_ customConfigFileName: String? = nil) throws {
         let defultConfigFileName: String = "mgawssnsconfig.txt"
         let configName = customConfigFileName ?? defultConfigFileName
-        if let configText = MGResourceUtils.loadString(fileName: configName) {
-            let config: RawAwsSnsConfig = MGJsonUtils.deserialize(configText, deserialize: RawAwsSnsConfig.self)!
+        
+        
+        if let path = Bundle.main.url(forResource: configName, withExtension: nil),
+            let configText = try? String(contentsOf: path),
+            let configData = configText.data(using: .utf8),
+            let config = try? JSONDecoder().decode(RawAwsSnsConfig.self, from: configData) {
             let target = config.configMap[mAppType]!
             mApplicationArn = target.applicationArn
             mTopicsArn = target.topicsArn
@@ -88,11 +107,22 @@ public class MGAwsSnsManager: NSObject {
      @param regionType: 地區字串, 具體字串對應參考 http://docs.aws.amazon.com/general/latest/gr/rande.html
      @param identityPoolId: 身份池id
      */
-    public init(applicationArn: String, topicsArn: [String], region: String, identityPoolId: String) {
+    public func loadConfig(applicationArn: String, topicsArn: [String], region: String, identityPoolId: String) throws {
         mApplicationArn = applicationArn
         mTopicsArn = topicsArn
         mRegion = region
         mIdentityPoolId = identityPoolId
+    }
+    
+    //將主題是否註冊了的設定寫入app
+    private func saveSetting() {
+        UserDefaults.standard.set(isTopicRegistered, forKey: keyForTopicRegistered)
+        UserDefaults.standard.synchronize()
+    }
+    
+    //取出app是否已經注冊主題
+    private func loadSetting() {
+        isTopicRegistered = UserDefaults.standard.bool(forKey: keyForTopicRegistered)
     }
     
     //將字串轉換為對應的地區
@@ -107,7 +137,7 @@ public class MGAwsSnsManager: NSObject {
     //初始化 Amazon Cognito 憑證提供程序
     //此方法必須在 AppDelegate 入口點呼叫, 即是以下方法
     //func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?)
-    public func configurationInit() throws {
+    public func settingStart() throws {
         let regionType = try convertRegionType(by: mRegion)
         
         let credentialsProvider = AWSCognitoCredentialsProvider(regionType: regionType,
@@ -126,8 +156,11 @@ public class MGAwsSnsManager: NSObject {
      註冊endpoint到applicationArn裡面
      此方法必須在 AppDelegate 的以下方法呼叫
      func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data)
+     
+     @param deviceToken - app的裝置token
+     @param autoRegisterTopic - 是否在app註冊成功後自動註冊topic
      */
-    public func registerToApplication(deviceToken: Data) {
+    public func registerToApplication(deviceToken: Data, autoRegisterTopic: Bool) {
         var token = ""
         for i in 0..<deviceToken.count {
             token = token + String(format: "%02.2hhx", arguments: [deviceToken[i]])
@@ -152,7 +185,9 @@ public class MGAwsSnsManager: NSObject {
                 if let endpointArnForSNS = createEndpointResponse.endpointArn {
                     self?.mEndPoint = endpointArnForSNS
                     print("aws 創建 endpoint 成功: \(endpointArnForSNS)")
-                    self?.registerToTopic()
+                    if autoRegisterTopic {
+                        self?.registerToTopic()
+                    }
                 } else {
                     self?.mEndPoint = ""
                     print("aws 創建 endpoint 成功: 但 endpoint 為空")
@@ -163,15 +198,16 @@ public class MGAwsSnsManager: NSObject {
         })
     }
     
-    //取得 endPoint 並且註冊到 application 之後, 即可以開始註冊到 topic, 此方法由內部呼叫, 不用外部設定
-    private func registerToTopic() {
+    //取得 endPoint 並且註冊到 application 之後, 即可以開始註冊到 topic
+    //不管訂閱是否成功, 都將已經開啟推播功能寫入專案
+    public func registerToTopic() {
+        isTopicRegistered = true
+        saveSetting()
         
         if mTopicsArn.count == 0 {
             return
         }
-        
         let sns = AWSSNS.default()
-        
         mTopicsArn.forEach { topicArn in
             let subscriptInput = AWSSNSSubscribeInput.init()
             subscriptInput?.topicArn = topicArn
@@ -186,7 +222,32 @@ public class MGAwsSnsManager: NSObject {
                 }
             }
         }
+    }
+    
+    //取消訂閱主題
+    //不管取消訂閱是否成功, 都將已經關閉推播功能寫入專案
+    public func unregisterTopic() {
+        isTopicRegistered = false
+        saveSetting()
         
+        if mTopicsArn.count == 0 {
+            return
+        }
+        let sns = AWSSNS.default()
+        mTopicsArn.forEach { topicArn in
+            let unsubscriptInput = AWSSNSUnsubscribeInput.init()
+            unsubscriptInput?.subscriptionArn = topicArn
+            
+            sns.unsubscribe(unsubscriptInput!) { err in
+                if let err = err {
+                    print("取消訂閱topic出錯: \(err)")
+                } else {
+                    print("取消訂閱topic成功: \(topicArn)")
+                }
+            }
+            
+            
+        }
     }
 }
 

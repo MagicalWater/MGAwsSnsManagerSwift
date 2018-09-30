@@ -1,10 +1,8 @@
-ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AWSCognito" "${PODS_CONFIGURATION_BUILD_DIR}/AWSCore" "${PODS_CONFIGURATION_BUILD_DIR}/AWSSNS" "${PODS_CONFIGURATION_BUILD_DIR}/CLImagePickerTool" "${PODS_CONFIGURATION_BUILD_DIR}/Ipify" "${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher" "${PODS_CONFIGURATION_BUILD_DIR}/MGUtilsSwift" "${PODS_CONFIGURATION_BUILD_DIR}/ReachabilitySwift" "${PODS_CONFIGURATION_BUILD_DIR}/SwiftyJSON" "${PODS_CONFIGURATION_BUILD_DIR}/Toast-Swift"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AWSCognito" "${PODS_CONFIGURATION_BUILD_DIR}/AWSCore" "${PODS_CONFIGURATION_BUILD_DIR}/AWSSNS"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
-OTHER_CFLAGS = $(inherited) -iquote "${PODS_CONFIGURATION_BUILD_DIR}/AWSCognito/AWSCognito.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/AWSCore/AWSCore.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/AWSSNS/AWSSNS.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/CLImagePickerTool/CLImagePickerTool.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/Ipify/Ipify.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher/Kingfisher.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/MGUtilsSwift/MGUtilsSwift.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/ReachabilitySwift/Reachability.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/SwiftyJSON/SwiftyJSON.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/Toast-Swift/Toast_Swift.framework/Headers"
-OTHER_LDFLAGS = $(inherited) -framework "AWSCognito" -framework "AWSCore" -framework "AWSSNS" -framework "CLImagePickerTool" -framework "Ipify" -framework "Kingfisher" -framework "MGUtilsSwift" -framework "Reachability" -framework "SwiftyJSON" -framework "Toast_Swift"
-OTHER_SWIFT_FLAGS = $(inherited) "-D" "COCOAPODS"
+OTHER_CFLAGS = $(inherited) -iquote "${PODS_CONFIGURATION_BUILD_DIR}/AWSCognito/AWSCognito.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/AWSCore/AWSCore.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/AWSSNS/AWSSNS.framework/Headers"
+OTHER_LDFLAGS = $(inherited) -framework "AWSCognito" -framework "AWSCore" -framework "AWSSNS"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_PODFILE_DIR_PATH = ${SRCROOT}/.
